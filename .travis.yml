@@ -1,0 +1,53 @@
+dist: trusty
+
+sudo: false
+
+language: php
+
+services:
+  - docker
+
+php:
+  - 7.2
+
+matrix:
+  fast_finish: true
+
+env:
+  - SYMFONY_VERSION="4.2.*" DB=postgres
+
+addons:
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
+      - docker-ce
+
+install: true
+
+before_script:
+  - composer self-update
+  - composer require symfony/panther
+
+# commands that will verify build
+script:
+  - PANTHER_NO_HEADLESS=1 ./bin/phpunit
+
+# Customize when the notification emails are sent.
+notifications:
+  email:
+    recipients:
+      - angelyx@live.fr
+    on_success: never # default: change
+    on_failure: always # default: always
+
+# safelist
+branches:
+  only:
+    - master
+    - dev
+
+cache:
+  directories:
+    - $HOME/.composer/cache
